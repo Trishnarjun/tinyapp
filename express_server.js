@@ -1,5 +1,7 @@
 const express = require("express");
+const cookieParser = require('cookie-parser')
 const bodyParser = require("body-parser");
+const { set } = require("express/lib/application");
 const app = express();
 const PORT = 8080;
 
@@ -21,6 +23,7 @@ generateRandomString();
 
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser())
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -48,10 +51,12 @@ app.post("/urls/:id", (req, res) => {
   // Respond with 'Ok' (we will replace this)
 });
 
-// app.post("/urls/edit/:id", (req, res) => {
-//   res.redirect(`/urls/${req.params.id}`);
-//   // Respond with 'Ok' (we will replace this)
-// });
+app.post("/login", (req, res) => {
+  let username = req.body.username;
+  res.cookie('name', username);
+  res.redirect(`/urls`);
+  // Respond with 'Ok' (we will replace this)
+});
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
