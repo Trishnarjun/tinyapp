@@ -32,10 +32,14 @@ app.get("/", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  let key = generateRandomString()
+  let key = generateRandomString();
   urlDatabase[key] = req.body.longURL;  // Log the POST request body to the console
-  console.log(urlDatabase);
   res.redirect(`/urls/${key}`);// Respond with 'Ok' (we will replace this)
+});
+app.post("/urls/:shortURL/delete", (req, res) => {
+  let databasekey = req.params.shortURL;
+  delete urlDatabase[databasekey];
+  res.redirect(`/urls`);// Respond with 'Ok' (we will replace this)
 });
 
 app.get("/u/:shortURL", (req, res) => {
