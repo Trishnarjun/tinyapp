@@ -41,6 +41,17 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[databasekey];
   res.redirect(`/urls`);// Respond with 'Ok' (we will replace this)
 });
+app.post("/urls/:id", (req, res) => {
+  const dataBaseKey = req.params.id;
+  urlDatabase[dataBaseKey] = req.body.longURL;
+  res.redirect(`/urls/${req.params.id}`);
+  // Respond with 'Ok' (we will replace this)
+});
+
+// app.post("/urls/edit/:id", (req, res) => {
+//   res.redirect(`/urls/${req.params.id}`);
+//   // Respond with 'Ok' (we will replace this)
+// });
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
