@@ -1,4 +1,15 @@
 const bcrypt = require('bcryptjs');
+const generateRandomString = () => {
+  let ranString = "";
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let letter of letters) {
+    ranString += letters.charAt(Math.floor(Math.random() * letters.length));
+    if (ranString.length === 6) {
+      break;
+    }
+  };
+  return ranString;
+};
 const urlByEmail = (urlDatabase, foundUser) => {
   let userUrlDatabase = [];
   for (const key in urlDatabase) {
@@ -31,4 +42,4 @@ const checkPassword = (foundUserPass, password) => {
     return bcrypt.compareSync(password, foundUserPass)
 } 
 
-module.exports = { urlByEmail, checkEmail, checkUser, checkPassword }
+module.exports = { urlByEmail, checkEmail, checkUser, checkPassword,generateRandomString }

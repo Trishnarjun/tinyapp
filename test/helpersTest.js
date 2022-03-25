@@ -2,6 +2,7 @@ const { assert } = require('chai');
 
 const { checkUser } = require('../helpers.js');
 
+
 const testUsers = {
   "userRandomID": {
     id: "userRandomID", 
