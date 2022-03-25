@@ -24,7 +24,7 @@ const urlByEmail = (urlDatabase, foundUser) => {
 }
 
 const checkEmail = (users, id) => {
-    return (users[id]) ? users[id].email : null  
+  return (users[id]) ? users[id].email : null  
 }
 
 const checkUser = (users, email) => {
@@ -36,6 +36,7 @@ const checkUser = (users, email) => {
   return false;
 }
 const checkPassword = (foundUserPass, password) => {
+  console.log(foundUserPass, password)
   if (password === "" ) {
       return false;
     }

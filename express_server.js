@@ -53,7 +53,7 @@ app.post("/urls", (req, res) => {
   const foundUser = checkUser(users, email);
   const userUrlDatabase = urlByEmail(urlDatabase, foundUser);
   const shortkey = Object.keys(userUrlDatabase).filter(key => key === req.params.shortURL)[0]
-  if (email&& shortkey === req.params.shortURL) {
+  if (email && shortkey === req.params.shortURL) {
     urlDatabase[key] = {
       longURL: req.body.longURL,
       userID: id
@@ -65,14 +65,16 @@ app.post("/urls", (req, res) => {
 
 });
 //editing URL
+
 app.post("/urls/:id", (req, res) => {
   const ids = req.session.user_id;
   const email = checkEmail(users , ids);
   const foundUser = checkUser(users, email);
   const userUrlDatabase = urlByEmail(urlDatabase, foundUser);
-  const shortkey = Object.keys(userUrlDatabase).filter(key => key === req.params.shortURL)[0]
+  console.log(userUrlDatabase);
+  const shortkey = Object.keys(userUrlDatabase).filter(key => key === req.params.id)[0]
   //checking if email exists and if the shortURL is equal to the user specific shortURL database
-  if (email && shortkey === req.params.shortURL) {
+  if (email && shortkey === req.params.id) {
     const dataBaseKey = req.params.id;
     urlDatabase[dataBaseKey]["longURL"] = req.body.longURL;
     return res.redirect(`/urls/${req.params.id}`);
@@ -80,6 +82,7 @@ app.post("/urls/:id", (req, res) => {
   res.send("you don't have access")
   
 });
+
 app.post("/urls/:shortURL/delete", (req, res) => {
   let databasekey = req.params.shortURL;
   const id = req.session.user_id;
@@ -99,11 +102,11 @@ app.post("/login", (req, res) => {
   let email = req.body.email;
   let passwordLogin = req.body.password
   const foundUser = checkUser(users, email);
-  const foundPassword = checkPassword(foundUser["password"], passwordLogin);
+  
   if (!foundUser) {
     return res.status(403).send("User does not exist");
   }
-
+  const foundPassword = checkPassword(foundUser["password"], passwordLogin);
   if (!foundPassword) {
     return res.status(403).send("Password does not match");
   }
@@ -130,7 +133,8 @@ app.post("/register", (req,res) => {
     password:  hashedPassword
   }
   //set cookie
-  req.session.user_id = users;
+
+  req.session.user_id = users[id].id;
   res.redirect("/urls");
 });
 app.post("/logout", (req, res) => {
@@ -145,15 +149,19 @@ app.get("/", (req, res) => {
 });
 app.get("/urls", (req,res) => {
   const id = req.session.user_id;
+  console.log(id);
   const email = checkEmail(users , id);
+  //console.log(email,"2");
   const foundUser = checkUser(users, email);
+  // console.log(foundUser,"3");
+  // console.log(users[id])
   const userUrlDatabase = urlByEmail(urlDatabase, foundUser);
   if (email) {
     const templateVars = { urls: userUrlDatabase, user: id , email};
     return res.render("urls_index", templateVars);
+  } else {
+    res.send("you need to login or register")
   }
-  res.send("you need to login or register")
-  
 });
 app.get("/urls/new", (req, res) => {
   const id = req.session.user_id;
@@ -175,7 +183,7 @@ app.get("/urls/:shortURL", (req, res) => {
     const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]["longURL"], user: req.session.user_id, email }; 
     return res.render("urls_show", templateVars);
   }
-  res.send("you need to login or register");
+  res.send("you do not have access");
 })
 app.get("/u/:shortURL", (req, res) => {
   try {
@@ -192,7 +200,7 @@ app.get("/login", (req, res) => {
 });
 app.get("/register", (req, res) => {
   const id = req.session.user_id;
-  const templateVars = { user: req.session.user_id , email: null };
+  const templateVars = { user: req.session.user_id, email: null }; 
   res.render("register", templateVars);
 });
 app.get("/urls.json", (req, res) => {
