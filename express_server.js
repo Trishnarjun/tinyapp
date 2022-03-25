@@ -50,7 +50,10 @@ app.post("/urls", (req, res) => {
   let key = generateRandomString();
   const id = req.session.user_id;
   let email = checkEmail(users, id)
-  if (email) {
+  const foundUser = checkUser(users, email);
+  const userUrlDatabase = urlByEmail(urlDatabase, foundUser);
+  const shortkey = Object.keys(userUrlDatabase).filter(key => key === req.params.shortURL)[0]
+  if (email&& shortkey === req.params.shortURL) {
     urlDatabase[key] = {
       longURL: req.body.longURL,
       userID: id
@@ -65,7 +68,11 @@ app.post("/urls", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   const ids = req.session.user_id;
   const email = checkEmail(users , ids);
-  if (email) {
+  const foundUser = checkUser(users, email);
+  const userUrlDatabase = urlByEmail(urlDatabase, foundUser);
+  const shortkey = Object.keys(userUrlDatabase).filter(key => key === req.params.shortURL)[0]
+  //checking if email exists and if the shortURL is equal to the user specific shortURL database
+  if (email && shortkey === req.params.shortURL) {
     const dataBaseKey = req.params.id;
     urlDatabase[dataBaseKey]["longURL"] = req.body.longURL;
     return res.redirect(`/urls/${req.params.id}`);
@@ -80,7 +87,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const foundUser = checkUser(users, email);
   const userUrlDatabase = urlByEmail(urlDatabase, foundUser);
   const shortkey = Object.keys(userUrlDatabase).filter(key => key === req.params.shortURL)[0]
-  //checking is email exists and if the shortURL is equal to the user specific shortURL database
+  //checking if email exists and if the shortURL is equal to the user specific shortURL database
   if (email && shortkey === req.params.shortURL) {
     delete urlDatabase[databasekey];
     return res.redirect(`/urls`);
@@ -163,7 +170,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const foundUser = checkUser(users, email);
   const userUrlDatabase = urlByEmail(urlDatabase, foundUser);
   const shortkey = Object.keys(userUrlDatabase).filter(key => key === req.params.shortURL)[0]
-  //checking is email exists and if the shortURL is equal to the user specific shortURL database
+  //checking if email exists and if the shortURL is equal to the user specific shortURL database
   if (email && shortkey === req.params.shortURL) {
     const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]["longURL"], user: req.session.user_id, email }; 
     return res.render("urls_show", templateVars);
