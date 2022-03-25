@@ -36,7 +36,6 @@ const checkUser = (users, email) => {
   return false;
 }
 const checkPassword = (foundUserPass, password) => {
-  console.log(foundUserPass, password)
   if (password === "" ) {
       return false;
     }

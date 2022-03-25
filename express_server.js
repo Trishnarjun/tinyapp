@@ -71,7 +71,6 @@ app.post("/urls/:id", (req, res) => {
   const email = checkEmail(users , ids);
   const foundUser = checkUser(users, email);
   const userUrlDatabase = urlByEmail(urlDatabase, foundUser);
-  console.log(userUrlDatabase);
   const shortkey = Object.keys(userUrlDatabase).filter(key => key === req.params.id)[0]
   //checking if email exists and if the shortURL is equal to the user specific shortURL database
   if (email && shortkey === req.params.id) {
@@ -149,12 +148,8 @@ app.get("/", (req, res) => {
 });
 app.get("/urls", (req,res) => {
   const id = req.session.user_id;
-  console.log(id);
   const email = checkEmail(users , id);
-  //console.log(email,"2");
   const foundUser = checkUser(users, email);
-  // console.log(foundUser,"3");
-  // console.log(users[id])
   const userUrlDatabase = urlByEmail(urlDatabase, foundUser);
   if (email) {
     const templateVars = { urls: userUrlDatabase, user: id , email};
